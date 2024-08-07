@@ -4,45 +4,56 @@
 using namespace std;
 
 class Car {
-public:
-    string make, model;
+private:
+    string make;
+    string model;
     int year;
     double price;
     bool isAvailable;
 
+public:
     Car(string make, string model, int year, double price)
         : make(make), model(model), year(year), price(price), isAvailable(true) {}
 
     void displayInfo() const {
-        cout << "Make: " << make << ", Model: " << model << ", Year: " << year
-             << ", Price: " << price << "Rs, " << (isAvailable ? "Available" : "Sold") << endl;
+        cout << "Make: " << this->make << ", Model: " << this->model << ", Year: " << this->year
+             << ", Price: " << this->price << "Rs, " << (this->isAvailable ? "Available" : "Sold") << endl;
     }
 
     void markAsSold() {
-        isAvailable = false;
-        cout << "The inquired car has been marked as sold." << endl;
+        this->isAvailable = false;
+        cout << "The car has been marked as sold." << endl;
+    }
+
+    bool checkAvailability() const {
+        return this->isAvailable;
+    }
+
+    Car& getThisCar() {
+        return *this;
     }
 };
 
 class Customer {
-public:
+private:
     string name;
 
+public:
     Customer(string name) : name(name) {}
 
     void inquire(const Car& car) const {
-        cout << name << " is inquiring about the following car:" << endl;
+        cout << this->name << " is inquiring about the following car:" << endl;
         car.displayInfo();
     }
 
     void testDrive(const Car& car) const {
-        cout << name << " is test driving the inquired car." << endl;
+        cout << this->name << " is test driving the inquired car." << endl;
     }
 
     void purchase(Car& car) {
-        if (car.isAvailable) {
-            car.markAsSold();
-            cout << name << " bought the inquired car." << endl;
+        if (car.getThisCar().checkAvailability()) {
+            car.getThisCar().markAsSold();
+            cout << this->name << " bought the inquired car." << endl;
         } else {
             cout << "Car is not available for purchase." << endl;
         }
