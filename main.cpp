@@ -58,21 +58,39 @@ public:
             cout << "Car is not available for purchase." << endl;
         }
     }
+
+    void displayCustomer() const {
+        cout << "Customer Name: " << this->name << endl;
+    }
 };
 
 int main() {
-    Car car1("Honda", "Civic", 2023, 220000);
-    Car car2("Toyota", "Camry", 2022, 250000);
+    // Array of Car objects
+    Car carArray[3] = { 
+        Car("Honda", "Civic", 2023, 220000), 
+        Car("Toyota", "Camry", 2022, 250000),
+        Car("Ford", "Mustang", 2021, 300000)
+    };
 
-    Customer sahil("Sahil Kharatmol");
+    // Array of Customer objects
+    Customer customerArray[3] = { 
+        Customer("Sahil Kharatmol"), 
+        Customer("Parth Shah"),
+        Customer("Divyam Seth")
+    };
 
-    sahil.inquire(car1);
-    sahil.testDrive(car1);
-    sahil.purchase(car1);
+    // Interactions with the customers and cars
+    for (int i = 0; i < 3; i++) {
+        customerArray[i].inquire(carArray[i]);
+        customerArray[i].testDrive(carArray[i]);
+        customerArray[i].purchase(carArray[i]);
+    }
 
+    // Displaying all cars' status
     cout << "List of Cars:" << endl;
-    car1.displayInfo();
-    car2.displayInfo();
+    for(int i = 0; i < 3; i++) {
+        carArray[i].displayInfo();
+    }
 
     return 0;
 }
