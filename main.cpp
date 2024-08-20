@@ -11,17 +11,24 @@ private:
     double price;
     bool isAvailable;
 
+    // Static variable to keep track of the total number of cars sold
+    static int totalCarsSold;
+    // Static variable to keep track of the total revenue generated
+    static double totalRevenue;
+
 public:
     Car(string make, string model, int year, double price)
         : make(make), model(model), year(year), price(price), isAvailable(true) {}
 
     void displayInfo() const {
         cout << "Make: " << this->make << ", Model: " << this->model << ", Year: " << this->year
-             << ", Price: " << this->price << "Rs, " << (this->isAvailable ? "Available" : "Sold") << endl;
+             << ", Price: " << this->price << " Rs, " << (this->isAvailable ? "Available" : "Sold") << endl;
     }
 
     void markAsSold() {
         this->isAvailable = false;
+        totalCarsSold++;  // Increment the static variable when a car is sold
+        totalRevenue += this->price;  // Add the price to the total revenue
         cout << "The car has been marked as sold." << endl;
     }
 
@@ -32,14 +39,31 @@ public:
     Car& getThisCar() {
         return *this;
     }
+
+    // Static method to access the total number of cars sold
+    static int getTotalCarsSold() {
+        return totalCarsSold;
+    }
+
+    // Static method to access the total revenue
+    static double getTotalRevenue() {
+        return totalRevenue;
+    }
 };
+
+// Initialize the static variables outside the class
+int Car::totalCarsSold = 0;
+double Car::totalRevenue = 0.0;
 
 class Customer {
 private:
     string name;
+    static int totalCustomers;  // Static variable to keep track of the total number of customers
 
 public:
-    Customer(string name) : name(name) {}
+    Customer(string name) : name(name) {
+        totalCustomers++;  // Increment the static variable when a customer is created
+    }
 
     void inquire(const Car& car) const {
         cout << this->name << " is inquiring about the following car:" << endl;
@@ -62,7 +86,15 @@ public:
     void displayCustomer() const {
         cout << "Customer Name: " << this->name << endl;
     }
+
+    // Static method to access the total number of customers
+    static int getTotalCustomers() {
+        return totalCustomers;
+    }
 };
+
+// Initialize the static variable outside the class
+int Customer::totalCustomers = 0;
 
 int main() {
     // Dynamic allocation of Car objects
@@ -78,17 +110,28 @@ int main() {
     customerArray[2] = new Customer("Divyam Seth");
 
     // Interactions with the customers and cars
-    for (int i = 0; i < 3; i++) {
-        customerArray[i]->inquire(*carArray[i]);
-        customerArray[i]->testDrive(*carArray[i]);
-        customerArray[i]->purchase(*carArray[i]);
-    }
+    customerArray[0]->inquire(*carArray[0]);
+    customerArray[0]->testDrive(*carArray[0]);
+    customerArray[0]->purchase(*carArray[0]);
+
+    customerArray[1]->inquire(*carArray[1]);
+    customerArray[1]->testDrive(*carArray[1]);
+    customerArray[1]->purchase(*carArray[1]);
+
+    customerArray[2]->inquire(*carArray[2]);
+    customerArray[2]->testDrive(*carArray[2]);
+    // The third customer decides not to purchase the car
 
     // Displaying all cars' status
     cout << "List of Cars:" << endl;
     for(int i = 0; i < 3; i++) {
         carArray[i]->displayInfo();
     }
+
+    // Displaying the total number of cars sold, total revenue, and total customers
+    cout << "Total Customers: " << Customer::getTotalCustomers() << endl;
+    cout << "Total Cars Sold: " << Car::getTotalCarsSold() << endl;
+    cout << "Total Revenue: " << Car::getTotalRevenue() << " Rs" << endl;
 
     // Deallocating memory
     for(int i = 0; i < 3; i++) {
