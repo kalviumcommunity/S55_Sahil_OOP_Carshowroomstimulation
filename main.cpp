@@ -65,31 +65,35 @@ public:
 };
 
 int main() {
-    // Array of Car objects
-    Car carArray[3] = { 
-        Car("Honda", "Civic", 2023, 220000), 
-        Car("Toyota", "Camry", 2022, 250000),
-        Car("Ford", "Mustang", 2021, 300000)
-    };
+    // Dynamic allocation of Car objects
+    Car* carArray[3];
+    carArray[0] = new Car("Honda", "Civic", 2023, 220000);
+    carArray[1] = new Car("Toyota", "Camry", 2022, 250000);
+    carArray[2] = new Car("Ford", "Mustang", 2021, 300000);
 
-    // Array of Customer objects
-    Customer customerArray[3] = { 
-        Customer("Sahil Kharatmol"), 
-        Customer("Parth Shah"),
-        Customer("Divyam Seth")
-    };
+    // Dynamic allocation of Customer objects
+    Customer* customerArray[3];
+    customerArray[0] = new Customer("Sahil Kharatmol");
+    customerArray[1] = new Customer("Parth Shah");
+    customerArray[2] = new Customer("Divyam Seth");
 
     // Interactions with the customers and cars
     for (int i = 0; i < 3; i++) {
-        customerArray[i].inquire(carArray[i]);
-        customerArray[i].testDrive(carArray[i]);
-        customerArray[i].purchase(carArray[i]);
+        customerArray[i]->inquire(*carArray[i]);
+        customerArray[i]->testDrive(*carArray[i]);
+        customerArray[i]->purchase(*carArray[i]);
     }
 
     // Displaying all cars' status
     cout << "List of Cars:" << endl;
     for(int i = 0; i < 3; i++) {
-        carArray[i].displayInfo();
+        carArray[i]->displayInfo();
+    }
+
+    // Deallocating memory
+    for(int i = 0; i < 3; i++) {
+        delete carArray[i];
+        delete customerArray[i];
     }
 
     return 0;
