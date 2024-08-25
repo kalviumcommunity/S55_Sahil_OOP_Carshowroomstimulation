@@ -11,9 +11,8 @@ private:
     double price;
     bool isAvailable;
 
-    // Static variable to keep track of the total number of cars sold
+    // Static variables to keep track of the total number of cars sold and total revenue
     static int totalCarsSold;
-    // Static variable to keep track of the total revenue generated
     static double totalRevenue;
 
 public:
@@ -26,10 +25,14 @@ public:
     }
 
     void markAsSold() {
-        this->isAvailable = false;
-        totalCarsSold++;  // Increment the static variable when a car is sold
-        totalRevenue += this->price;  // Add the price to the total revenue
-        cout << "The car has been marked as sold." << endl;
+        if (isAvailable) {  // Check if the car is available before marking it as sold
+            this->isAvailable = false;
+            totalCarsSold++;  // Increment the static variable when a car is sold
+            totalRevenue += this->price;  // Add the price to the total revenue
+            cout << "The car has been marked as sold." << endl;
+        } else {
+            cout << "Car is already sold." << endl;
+        }
     }
 
     bool checkAvailability() const {
@@ -40,18 +43,18 @@ public:
         return *this;
     }
 
-    // Static method to access the total number of cars sold
+    // Static method to get the total number of cars sold
     static int getTotalCarsSold() {
         return totalCarsSold;
     }
 
-    // Static method to access the total revenue
+    // Static method to get the total revenue generated from sold cars
     static double getTotalRevenue() {
         return totalRevenue;
     }
 };
 
-// Initialize the static variables outside the class
+// Initialize static variables outside the class
 int Car::totalCarsSold = 0;
 double Car::totalRevenue = 0.0;
 
@@ -75,8 +78,8 @@ public:
     }
 
     void purchase(Car& car) {
-        if (car.getThisCar().checkAvailability()) {
-            car.getThisCar().markAsSold();
+        if (car.checkAvailability()) {
+            car.markAsSold();
             cout << this->name << " bought the inquired car." << endl;
         } else {
             cout << "Car is not available for purchase." << endl;
@@ -87,7 +90,7 @@ public:
         cout << "Customer Name: " << this->name << endl;
     }
 
-    // Static method to access the total number of customers
+    // Static method to get the total number of customers
     static int getTotalCustomers() {
         return totalCustomers;
     }
