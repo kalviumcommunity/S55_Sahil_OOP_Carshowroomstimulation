@@ -16,39 +16,50 @@ private:
     static double totalRevenue;
 
 public:
+    // Constructor
     Car(string make, string model, int year, double price)
         : make(make), model(model), year(year), price(price), isAvailable(true) {}
 
+    // Accessors (getters)
+    string getMake() const { return make; }
+    string getModel() const { return model; }
+    int getYear() const { return year; }
+    double getPrice() const { return price; }
+    bool getIsAvailable() const { return isAvailable; }
+
+    // Mutators (setters)
+    void setMake(const string& newMake) { make = newMake; }
+    void setModel(const string& newModel) { model = newModel; }
+    void setYear(int newYear) { year = newYear; }
+    void setPrice(double newPrice) { price = newPrice; }
+    void setIsAvailable(bool availability) { isAvailable = availability; }
+
+    // Other member functions
     void displayInfo() const {
-        cout << "Make: " << this->make << ", Model: " << this->model << ", Year: " << this->year
-             << ", Price: " << this->price << " Rs, " << (this->isAvailable ? "Available" : "Sold") << endl;
+        cout << "Make: " << getMake() << ", Model: " << getModel() << ", Year: " << getYear()
+             << ", Price: " << getPrice() << " Rs, " << (getIsAvailable() ? "Available" : "Sold") << endl;
     }
 
     void markAsSold() {
-        if (isAvailable) {  // Check if the car is available before marking it as sold
-            this->isAvailable = false;
-            totalCarsSold++;  // Increment the static variable when a car is sold
-            totalRevenue += this->price;  // Add the price to the total revenue
+        if (getIsAvailable()) {
+            setIsAvailable(false);
+            totalCarsSold++;
+            totalRevenue += getPrice();
             cout << "The car has been marked as sold." << endl;
         } else {
             cout << "Car is already sold." << endl;
         }
     }
 
-    bool checkAvailability() const {
-        return this->isAvailable;
-    }
-
     Car& getThisCar() {
         return *this;
     }
 
-    // Static method to get the total number of cars sold
+    // Static methods
     static int getTotalCarsSold() {
         return totalCarsSold;
     }
 
-    // Static method to get the total revenue generated from sold cars
     static double getTotalRevenue() {
         return totalRevenue;
     }
@@ -61,42 +72,50 @@ double Car::totalRevenue = 0.0;
 class Customer {
 private:
     string name;
-    static int totalCustomers;  // Static variable to keep track of the total number of customers
+    static int totalCustomers;
 
 public:
+    // Constructor
     Customer(string name) : name(name) {
-        totalCustomers++;  // Increment the static variable when a customer is created
+        totalCustomers++;
     }
 
+    // Accessor
+    string getName() const { return name; }
+
+    // Mutator
+    void setName(const string& newName) { name = newName; }
+
+    // Other member functions
     void inquire(const Car& car) const {
-        cout << this->name << " is inquiring about the following car:" << endl;
+        cout << getName() << " is inquiring about the following car:" << endl;
         car.displayInfo();
     }
 
     void testDrive(const Car& car) const {
-        cout << this->name << " is test driving the inquired car." << endl;
+        cout << getName() << " is test driving the inquired car." << endl;
     }
 
     void purchase(Car& car) {
-        if (car.checkAvailability()) {
+        if (car.getIsAvailable()) {
             car.markAsSold();
-            cout << this->name << " bought the inquired car." << endl;
+            cout << getName() << " bought the inquired car." << endl;
         } else {
             cout << "Car is not available for purchase." << endl;
         }
     }
 
     void displayCustomer() const {
-        cout << "Customer Name: " << this->name << endl;
+        cout << "Customer Name: " << getName() << endl;
     }
 
-    // Static method to get the total number of customers
+    // Static method
     static int getTotalCustomers() {
         return totalCustomers;
     }
 };
 
-// Initialize the static variable outside the class
+// Initialize static variable outside the class
 int Customer::totalCustomers = 0;
 
 int main() {
@@ -111,6 +130,20 @@ int main() {
     customerArray[0] = new Customer("Sahil Kharatmol");
     customerArray[1] = new Customer("Parth Shah");
     customerArray[2] = new Customer("Divyam Seth");
+
+    // Using accessors (getters) and mutators (setters)
+    cout << "Before modification:" << endl;
+    cout << "Car Make: " << carArray[0]->getMake() << ", Model: " << carArray[0]->getModel() << endl;
+    cout << "Customer Name: " << customerArray[0]->getName() << endl;
+
+    // Modifying attributes using mutators
+    carArray[0]->setMake("Hyundai");
+    carArray[0]->setModel("Elantra");
+    customerArray[0]->setName("Aditya Borhade");
+
+    cout << "After modification:" << endl;
+    cout << "Car Make: " << carArray[0]->getMake() << ", Model: " << carArray[0]->getModel() << endl;
+    cout << "Customer Name: " << customerArray[0]->getName() << endl;
 
     // Interactions with the customers and cars
     customerArray[0]->inquire(*carArray[0]);
@@ -127,7 +160,7 @@ int main() {
 
     // Displaying all cars' status
     cout << "List of Cars:" << endl;
-    for(int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
         carArray[i]->displayInfo();
     }
 
@@ -137,7 +170,7 @@ int main() {
     cout << "Total Revenue: " << Car::getTotalRevenue() << " Rs" << endl;
 
     // Deallocating memory
-    for(int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
         delete carArray[i];
         delete customerArray[i];
     }
