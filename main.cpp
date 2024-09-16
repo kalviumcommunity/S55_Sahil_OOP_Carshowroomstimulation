@@ -17,9 +17,21 @@ private:
     static double totalRevenue;
 
 public:
-    // Constructor
+    // Default Constructor
+    Car() : make("Unknown"), model("Unknown"), year(0), price(0.0), isAvailable(false) {
+        cout << "Default Constructor called: Car created with default values." << endl;
+    }
+
+    // Parameterized Constructor
     Car(string make, string model, int year, double price)
-        : make(make), model(model), year(year), price(price), isAvailable(true) {}
+        : make(make), model(model), year(year), price(price), isAvailable(true) {
+        cout << "Parameterized Constructor called: Car created with specified values." << endl;
+    }
+
+    // Destructor
+    ~Car() {
+        cout << "Destructor called: Car object is being destroyed." << endl;
+    }
 
     // Public accessors (getters) for private data members
     string getMake() const { return make; }
@@ -76,9 +88,21 @@ private:
     static int totalCustomers;
 
 public:
-    // Constructor
-    Customer(string name) : name(name) {
+    // Default Constructor
+    Customer() : name("Unknown") {
+        cout << "Default Constructor called: Customer created with default name." << endl;
         totalCustomers++;
+    }
+
+    // Parameterized Constructor
+    Customer(string name) : name(name) {
+        cout << "Parameterized Constructor called: Customer created with specified name." << endl;
+        totalCustomers++;
+    }
+
+    // Destructor
+    ~Customer() {
+        cout << "Destructor called: Customer object is being destroyed." << endl;
     }
 
     // Public accessor (getter)
