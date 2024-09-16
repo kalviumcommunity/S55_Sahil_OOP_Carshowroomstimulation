@@ -5,13 +5,14 @@ using namespace std;
 
 class Car {
 private:
+    // Private data members
     string make;
     string model;
     int year;
     double price;
     bool isAvailable;
 
-    // Static variables to keep track of the total number of cars sold and total revenue
+    // Static variables (also private)
     static int totalCarsSold;
     static double totalRevenue;
 
@@ -20,26 +21,27 @@ public:
     Car(string make, string model, int year, double price)
         : make(make), model(model), year(year), price(price), isAvailable(true) {}
 
-    // Accessors (getters)
+    // Public accessors (getters) for private data members
     string getMake() const { return make; }
     string getModel() const { return model; }
     int getYear() const { return year; }
     double getPrice() const { return price; }
     bool getIsAvailable() const { return isAvailable; }
 
-    // Mutators (setters)
+    // Public mutators (setters) for private data members
     void setMake(const string& newMake) { make = newMake; }
     void setModel(const string& newModel) { model = newModel; }
     void setYear(int newYear) { year = newYear; }
     void setPrice(double newPrice) { price = newPrice; }
     void setIsAvailable(bool availability) { isAvailable = availability; }
 
-    // Other member functions
+    // Public member function to display car info
     void displayInfo() const {
         cout << "Make: " << getMake() << ", Model: " << getModel() << ", Year: " << getYear()
              << ", Price: " << getPrice() << " Rs, " << (getIsAvailable() ? "Available" : "Sold") << endl;
     }
 
+    // Public function to mark the car as sold
     void markAsSold() {
         if (getIsAvailable()) {
             setIsAvailable(false);
@@ -51,11 +53,7 @@ public:
         }
     }
 
-    Car& getThisCar() {
-        return *this;
-    }
-
-    // Static methods
+    // Static methods to retrieve static private data
     static int getTotalCarsSold() {
         return totalCarsSold;
     }
@@ -71,7 +69,10 @@ double Car::totalRevenue = 0.0;
 
 class Customer {
 private:
+    // Private data member
     string name;
+
+    // Static variable
     static int totalCustomers;
 
 public:
@@ -80,13 +81,13 @@ public:
         totalCustomers++;
     }
 
-    // Accessor
+    // Public accessor (getter)
     string getName() const { return name; }
 
-    // Mutator
+    // Public mutator (setter)
     void setName(const string& newName) { name = newName; }
 
-    // Other member functions
+    // Public methods for customer interactions
     void inquire(const Car& car) const {
         cout << getName() << " is inquiring about the following car:" << endl;
         car.displayInfo();
@@ -105,11 +106,7 @@ public:
         }
     }
 
-    void displayCustomer() const {
-        cout << "Customer Name: " << getName() << endl;
-    }
-
-    // Static method
+    // Static method to get the total number of customers
     static int getTotalCustomers() {
         return totalCustomers;
     }
@@ -119,13 +116,13 @@ public:
 int Customer::totalCustomers = 0;
 
 int main() {
-    // Dynamic allocation of Car objects
+    // Creating dynamic Car objects
     Car* carArray[3];
     carArray[0] = new Car("Honda", "Civic", 2023, 220000);
     carArray[1] = new Car("Toyota", "Camry", 2022, 250000);
     carArray[2] = new Car("Ford", "Mustang", 2021, 300000);
 
-    // Dynamic allocation of Customer objects
+    // Creating dynamic Customer objects
     Customer* customerArray[3];
     customerArray[0] = new Customer("Sahil Kharatmol");
     customerArray[1] = new Customer("Parth Shah");
@@ -145,7 +142,7 @@ int main() {
     cout << "Car Make: " << carArray[0]->getMake() << ", Model: " << carArray[0]->getModel() << endl;
     cout << "Customer Name: " << customerArray[0]->getName() << endl;
 
-    // Interactions with the customers and cars
+    // Customer interactions with cars
     customerArray[0]->inquire(*carArray[0]);
     customerArray[0]->testDrive(*carArray[0]);
     customerArray[0]->purchase(*carArray[0]);
@@ -156,20 +153,20 @@ int main() {
 
     customerArray[2]->inquire(*carArray[2]);
     customerArray[2]->testDrive(*carArray[2]);
-    // The third customer decides not to purchase the car
+    // The third customer does not purchase the car
 
-    // Displaying all cars' status
+    // Display all cars' status
     cout << "List of Cars:" << endl;
     for (int i = 0; i < 3; i++) {
         carArray[i]->displayInfo();
     }
 
-    // Displaying the total number of cars sold, total revenue, and total customers
+    // Displaying static info
     cout << "Total Customers: " << Customer::getTotalCustomers() << endl;
     cout << "Total Cars Sold: " << Car::getTotalCarsSold() << endl;
     cout << "Total Revenue: " << Car::getTotalRevenue() << " Rs" << endl;
 
-    // Deallocating memory
+    // Free allocated memory
     for (int i = 0; i < 3; i++) {
         delete carArray[i];
         delete customerArray[i];
