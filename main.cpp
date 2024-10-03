@@ -25,7 +25,7 @@ public:
         cout << "Parameterized Constructor called: Car created with specified values." << endl;
     }
 
-    ~Car() {
+    virtual ~Car() {
         cout << "Destructor called: Car object is being destroyed." << endl;
     }
 
@@ -42,8 +42,8 @@ public:
     void setPrice(double newPrice) { price = newPrice; }
     void setIsAvailable(bool availability) { isAvailable = availability; }
 
-    // Display car info
-    void displayInfo() const {
+    // Virtual display function for runtime polymorphism
+    virtual void displayInfo() const {
         cout << "Make: " << make << ", Model: " << model << ", Year: " << year 
              << ", Price: " << price << " Rs, " 
              << (isAvailable ? "Available" : "Sold") << endl;
@@ -70,7 +70,7 @@ public:
 int Car::totalCarsSold = 0;
 double Car::totalRevenue = 0.0;
 
-// Derived class for Single Inheritance
+// Derived class demonstrating runtime polymorphism
 class LuxuryCar : public Car {
 private:
     string luxuryFeatures;
@@ -81,8 +81,9 @@ public:
         cout << "Luxury Car created with additional features." << endl;
     }
 
-    void displayLuxuryInfo() const {
-        displayInfo();
+    // Overriding displayInfo to add luxury features
+    void displayInfo() const override {
+        Car::displayInfo(); // Call base class displayInfo
         cout << "Luxury Features: " << luxuryFeatures << endl;
     }
 };
@@ -114,12 +115,18 @@ public:
     string getName() const { return name; }
     void setName(const string& newName) { name = newName; }
 
-    // Inquire and test drive
+    // Function overloading (Compile-time polymorphism)
     void inquire(const Car& car) const {
         cout << name << " is inquiring about the following car:" << endl;
         car.displayInfo();
     }
 
+    void inquire(const Car& car, const string& additionalRequest) const {
+        cout << name << " is inquiring about the following car with additional request (" << additionalRequest << "):" << endl;
+        car.displayInfo();
+    }
+
+    // Test drive
     void testDrive(const Car& car) const {
         cout << name << " is test driving the inquired car." << endl;
     }
@@ -156,7 +163,7 @@ public:
     }
 };
 
-// Main function demonstrating the use of inheritance and examples
+// Main function demonstrating the use of polymorphism and examples
 int main() {
     // Creating dynamic Car objects (Regular and Luxury)
     Car* carArray[3];
@@ -183,8 +190,9 @@ int main() {
     cout << "Car Make: " << carArray[0]->getMake() << ", Model: " << carArray[0]->getModel() << endl;
     cout << "Customer Name: " << customerArray[0]->getName() << endl;
 
-    // Customer interactions
+    // Customer interactions demonstrating polymorphism
     customerArray[0]->inquire(*carArray[0]);
+    customerArray[0]->inquire(*carArray[1], "with a premium package request");
     customerArray[0]->testDrive(*carArray[0]);
     customerArray[0]->purchase(*carArray[0]);
 
@@ -195,7 +203,7 @@ int main() {
     customerArray[2]->inquire(*carArray[2]);
     customerArray[2]->testDrive(*carArray[2]);
 
-    // Display all cars' status
+    // Display all cars' status using runtime polymorphism
     cout << "List of Cars:" << endl;
     for (int i = 0; i < 3; i++) {
         carArray[i]->displayInfo();
