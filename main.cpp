@@ -3,161 +3,178 @@
 
 using namespace std;
 
+// Base class for Cars
 class Car {
 private:
-    // Private data members
-    string make;
-    string model;
+    string make, model;
     int year;
     double price;
     bool isAvailable;
 
-    // Static variables (also private)
     static int totalCarsSold;
     static double totalRevenue;
 
 public:
-    // Default Constructor
+    // Constructors and Destructor
     Car() : make("Unknown"), model("Unknown"), year(0), price(0.0), isAvailable(false) {
         cout << "Default Constructor called: Car created with default values." << endl;
     }
 
-    // Parameterized Constructor
     Car(string make, string model, int year, double price)
         : make(make), model(model), year(year), price(price), isAvailable(true) {
         cout << "Parameterized Constructor called: Car created with specified values." << endl;
     }
 
-    // Destructor
     ~Car() {
         cout << "Destructor called: Car object is being destroyed." << endl;
     }
 
-    // Public accessors (getters) for private data members
+    // Accessors and Mutators
     string getMake() const { return make; }
     string getModel() const { return model; }
     int getYear() const { return year; }
     double getPrice() const { return price; }
     bool getIsAvailable() const { return isAvailable; }
 
-    // Public mutators (setters) for private data members
     void setMake(const string& newMake) { make = newMake; }
     void setModel(const string& newModel) { model = newModel; }
     void setYear(int newYear) { year = newYear; }
     void setPrice(double newPrice) { price = newPrice; }
     void setIsAvailable(bool availability) { isAvailable = availability; }
 
-    // Public member function to display car info
+    // Display car info
     void displayInfo() const {
-        cout << "Make: " << getMake() << ", Model: " << getModel() << ", Year: " << getYear()
-             << ", Price: " << getPrice() << " Rs, " << (getIsAvailable() ? "Available" : "Sold") << endl;
+        cout << "Make: " << make << ", Model: " << model << ", Year: " << year 
+             << ", Price: " << price << " Rs, " 
+             << (isAvailable ? "Available" : "Sold") << endl;
     }
 
-    // Public function to mark the car as sold
+    // Mark car as sold
     void markAsSold() {
-        if (getIsAvailable()) {
-            setIsAvailable(false);
+        if (isAvailable) {
+            isAvailable = false;
             totalCarsSold++;
-            totalRevenue += getPrice();
+            totalRevenue += price;
             cout << "The car has been marked as sold." << endl;
         } else {
             cout << "Car is already sold." << endl;
         }
     }
 
-    // Static methods to retrieve static private data
-    static int getTotalCarsSold() {
-        return totalCarsSold;
-    }
-
-    static double getTotalRevenue() {
-        return totalRevenue;
-    }
+    // Static methods
+    static int getTotalCarsSold() { return totalCarsSold; }
+    static double getTotalRevenue() { return totalRevenue; }
 };
 
-// Initialize static variables outside the class
+// Initialize static variables
 int Car::totalCarsSold = 0;
 double Car::totalRevenue = 0.0;
 
+// Derived class for Single Inheritance
+class LuxuryCar : public Car {
+private:
+    string luxuryFeatures;
+
+public:
+    LuxuryCar(string make, string model, int year, double price, string features)
+        : Car(make, model, year, price), luxuryFeatures(features) {
+        cout << "Luxury Car created with additional features." << endl;
+    }
+
+    void displayLuxuryInfo() const {
+        displayInfo();
+        cout << "Luxury Features: " << luxuryFeatures << endl;
+    }
+};
+
+// Base class for Customers
 class Customer {
 private:
-    // Private data member
     string name;
 
-    // Static variable
     static int totalCustomers;
 
 public:
-    // Default Constructor
+    // Constructors and Destructor
     Customer() : name("Unknown") {
         cout << "Default Constructor called: Customer created with default name." << endl;
         totalCustomers++;
     }
 
-    // Parameterized Constructor
     Customer(string name) : name(name) {
         cout << "Parameterized Constructor called: Customer created with specified name." << endl;
         totalCustomers++;
     }
 
-    // Destructor
     ~Customer() {
         cout << "Destructor called: Customer object is being destroyed." << endl;
     }
 
-    // Public accessor (getter)
+    // Accessors and Mutators
     string getName() const { return name; }
-
-    // Public mutator (setter)
     void setName(const string& newName) { name = newName; }
 
-    // Public methods for customer interactions
+    // Inquire and test drive
     void inquire(const Car& car) const {
-        cout << getName() << " is inquiring about the following car:" << endl;
+        cout << name << " is inquiring about the following car:" << endl;
         car.displayInfo();
     }
 
     void testDrive(const Car& car) const {
-        cout << getName() << " is test driving the inquired car." << endl;
+        cout << name << " is test driving the inquired car." << endl;
     }
 
+    // Purchase a car
     void purchase(Car& car) {
         if (car.getIsAvailable()) {
             car.markAsSold();
-            cout << getName() << " bought the inquired car." << endl;
+            cout << name << " bought the inquired car." << endl;
         } else {
             cout << "Car is not available for purchase." << endl;
         }
     }
 
-    // Static method to get the total number of customers
-    static int getTotalCustomers() {
-        return totalCustomers;
+    // Static method
+    static int getTotalCustomers() { return totalCustomers; }
+};
+
+// Initialize static variable
+int Customer::totalCustomers = 0;
+
+// Multilevel Inheritance
+class RegularCustomer : public Customer {
+public:
+    RegularCustomer(string name) : Customer(name) {
+        cout << "Regular Customer created." << endl;
     }
 };
 
-// Initialize static variable outside the class
-int Customer::totalCustomers = 0;
+class VIPCustomer : public RegularCustomer {
+public:
+    VIPCustomer(string name) : RegularCustomer(name) {
+        cout << "VIP Customer created with extra perks." << endl;
+    }
+};
 
+// Main function demonstrating the use of inheritance and examples
 int main() {
-    // Creating dynamic Car objects
+    // Creating dynamic Car objects (Regular and Luxury)
     Car* carArray[3];
     carArray[0] = new Car("Honda", "Civic", 2023, 220000);
-    carArray[1] = new Car("Toyota", "Camry", 2022, 250000);
+    carArray[1] = new LuxuryCar("BMW", "7 Series", 2023, 500000, "Leather seats, Sunroof, Premium sound system");
     carArray[2] = new Car("Ford", "Mustang", 2021, 300000);
 
-    // Creating dynamic Customer objects
-    Customer* customerArray[3];
-    customerArray[0] = new Customer("Sahil Kharatmol");
-    customerArray[1] = new Customer("Parth Shah");
-    customerArray[2] = new Customer("Divyam Seth");
+    // Creating dynamic Customer objects (Regular and VIP)
+    RegularCustomer* customerArray[3];
+    customerArray[0] = new VIPCustomer("Sahil Kharatmol");
+    customerArray[1] = new RegularCustomer("Parth Shah");
+    customerArray[2] = new RegularCustomer("Divyam Seth");
 
-    // Using accessors (getters) and mutators (setters)
+    // Accessor and mutator examples
     cout << "Before modification:" << endl;
     cout << "Car Make: " << carArray[0]->getMake() << ", Model: " << carArray[0]->getModel() << endl;
     cout << "Customer Name: " << customerArray[0]->getName() << endl;
 
-    // Modifying attributes using mutators
     carArray[0]->setMake("Hyundai");
     carArray[0]->setModel("Elantra");
     customerArray[0]->setName("Aditya Borhade");
@@ -166,7 +183,7 @@ int main() {
     cout << "Car Make: " << carArray[0]->getMake() << ", Model: " << carArray[0]->getModel() << endl;
     cout << "Customer Name: " << customerArray[0]->getName() << endl;
 
-    // Customer interactions with cars
+    // Customer interactions
     customerArray[0]->inquire(*carArray[0]);
     customerArray[0]->testDrive(*carArray[0]);
     customerArray[0]->purchase(*carArray[0]);
@@ -177,7 +194,6 @@ int main() {
 
     customerArray[2]->inquire(*carArray[2]);
     customerArray[2]->testDrive(*carArray[2]);
-    // The third customer does not purchase the car
 
     // Display all cars' status
     cout << "List of Cars:" << endl;
@@ -185,12 +201,12 @@ int main() {
         carArray[i]->displayInfo();
     }
 
-    // Displaying static info
+    // Static method calls
     cout << "Total Customers: " << Customer::getTotalCustomers() << endl;
     cout << "Total Cars Sold: " << Car::getTotalCarsSold() << endl;
     cout << "Total Revenue: " << Car::getTotalRevenue() << " Rs" << endl;
 
-    // Free allocated memory
+    // Clean up
     for (int i = 0; i < 3; i++) {
         delete carArray[i];
         delete customerArray[i];
