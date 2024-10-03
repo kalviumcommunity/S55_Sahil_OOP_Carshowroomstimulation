@@ -3,7 +3,7 @@
 
 using namespace std;
 
-// Base class for Cars
+// Abstract Base class for Cars
 class Car {
 private:
     string make, model;
@@ -42,12 +42,8 @@ public:
     void setPrice(double newPrice) { price = newPrice; }
     void setIsAvailable(bool availability) { isAvailable = availability; }
 
-    // Virtual display function for runtime polymorphism
-    virtual void displayInfo() const {
-        cout << "Make: " << make << ", Model: " << model << ", Year: " << year 
-             << ", Price: " << price << " Rs, " 
-             << (isAvailable ? "Available" : "Sold") << endl;
-    }
+    // Pure virtual function to make Car an abstract class
+    virtual void displayInfo() const = 0;  // Pure virtual function
 
     // Mark car as sold
     void markAsSold() {
@@ -83,7 +79,9 @@ public:
 
     // Overriding displayInfo to add luxury features
     void displayInfo() const override {
-        Car::displayInfo(); // Call base class displayInfo
+        cout << "Make: " << getMake() << ", Model: " << getModel() << ", Year: " << getYear() 
+             << ", Price: " << getPrice() << " Rs, "
+             << (getIsAvailable() ? "Available" : "Sold") << endl;
         cout << "Luxury Features: " << luxuryFeatures << endl;
     }
 };
@@ -163,31 +161,25 @@ public:
     }
 };
 
-// Main function demonstrating the use of polymorphism and examples
 int main() {
-    // Creating dynamic Car objects (Regular and Luxury)
+    // Creating dynamic Car objects (3 cars: Regular and Luxury)
     Car* carArray[3];
-    carArray[0] = new Car("Honda", "Civic", 2023, 220000);
-    carArray[1] = new LuxuryCar("BMW", "7 Series", 2023, 500000, "Leather seats, Sunroof, Premium sound system");
-    carArray[2] = new Car("Ford", "Mustang", 2021, 300000);
+    carArray[0] = new LuxuryCar("BMW", "7 Series", 2023, 500000, "Leather seats, Sunroof, Premium sound system");
+    carArray[1] = new LuxuryCar("Mercedes", "S Class", 2023, 400000, "Massage seats, Panoramic sunroof");
+    carArray[2] = new LuxuryCar("Audi", "A8", 2023, 550000, "Heated seats, Night vision");
 
     // Creating dynamic Customer objects (Regular and VIP)
-    RegularCustomer* customerArray[3];
+    RegularCustomer* customerArray[2];
     customerArray[0] = new VIPCustomer("Sahil Kharatmol");
     customerArray[1] = new RegularCustomer("Parth Shah");
-    customerArray[2] = new RegularCustomer("Divyam Seth");
 
     // Accessor and mutator examples
     cout << "Before modification:" << endl;
-    cout << "Car Make: " << carArray[0]->getMake() << ", Model: " << carArray[0]->getModel() << endl;
     cout << "Customer Name: " << customerArray[0]->getName() << endl;
 
-    carArray[0]->setMake("Hyundai");
-    carArray[0]->setModel("Elantra");
     customerArray[0]->setName("Aditya Borhade");
 
     cout << "After modification:" << endl;
-    cout << "Car Make: " << carArray[0]->getMake() << ", Model: " << carArray[0]->getModel() << endl;
     cout << "Customer Name: " << customerArray[0]->getName() << endl;
 
     // Customer interactions demonstrating polymorphism
@@ -196,12 +188,9 @@ int main() {
     customerArray[0]->testDrive(*carArray[0]);
     customerArray[0]->purchase(*carArray[0]);
 
-    customerArray[1]->inquire(*carArray[1]);
-    customerArray[1]->testDrive(*carArray[1]);
-    customerArray[1]->purchase(*carArray[1]);
-
-    customerArray[2]->inquire(*carArray[2]);
-    customerArray[2]->testDrive(*carArray[2]);
+    customerArray[1]->inquire(*carArray[2]);
+    customerArray[1]->testDrive(*carArray[2]);
+    customerArray[1]->purchase(*carArray[2]);
 
     // Display all cars' status using runtime polymorphism
     cout << "List of Cars:" << endl;
@@ -217,6 +206,8 @@ int main() {
     // Clean up
     for (int i = 0; i < 3; i++) {
         delete carArray[i];
+    }
+    for (int i = 0; i < 2; i++) {
         delete customerArray[i];
     }
 
