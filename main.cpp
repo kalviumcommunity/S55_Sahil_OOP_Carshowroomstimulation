@@ -235,13 +235,9 @@ int main() {
     // Display sales report
     CarSalesReport::showSalesReport();
 
-    // Clean up
-    for (int i = 0; i < 3; i++) {
-        delete carArray[i];
-    }
-    for (int i = 0; i < 2; i++) {
-        delete customerArray[i];
-    }
+    // Cleaning up dynamic memory
+    for (int i = 0; i < 3; i++) delete carArray[i];
+    for (int i = 0; i < 2; i++) delete customerArray[i];
 
     return 0;
 }
