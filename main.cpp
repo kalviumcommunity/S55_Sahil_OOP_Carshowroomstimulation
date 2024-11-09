@@ -43,7 +43,7 @@ public:
     void setIsAvailable(bool availability) { isAvailable = availability; }
 
     // Pure virtual function to make Car an abstract class
-    virtual void displayInfo() const = 0;  // Pure virtual function
+    virtual void displayInfo() const = 0;  
 
     // Mark car as sold
     void markAsSold() {
@@ -66,10 +66,23 @@ public:
 int Car::totalCarsSold = 0;
 double Car::totalRevenue = 0.0;
 
+// Class for handling luxury features
+class LuxuryFeatures {
+private:
+    string features;
+
+public:
+    LuxuryFeatures(string features) : features(features) {}
+
+    void displayFeatures() const {
+        cout << "Luxury Features: " << features << endl;
+    }
+};
+
 // Derived class demonstrating runtime polymorphism
 class LuxuryCar : public Car {
 private:
-    string luxuryFeatures;
+    LuxuryFeatures luxuryFeatures;
 
 public:
     LuxuryCar(string make, string model, int year, double price, string features)
@@ -82,7 +95,7 @@ public:
         cout << "Make: " << getMake() << ", Model: " << getModel() << ", Year: " << getYear() 
              << ", Price: " << getPrice() << " Rs, "
              << (getIsAvailable() ? "Available" : "Sold") << endl;
-        cout << "Luxury Features: " << luxuryFeatures << endl;
+        luxuryFeatures.displayFeatures();
     }
 };
 
@@ -94,7 +107,6 @@ private:
     static int totalCustomers;
 
 public:
-    // Constructors and Destructor
     Customer() : name("Unknown") {
         cout << "Default Constructor called: Customer created with default name." << endl;
         totalCustomers++;
@@ -109,11 +121,9 @@ public:
         cout << "Destructor called: Customer object is being destroyed." << endl;
     }
 
-    // Accessors and Mutators
     string getName() const { return name; }
     void setName(const string& newName) { name = newName; }
 
-    // Function overloading (Compile-time polymorphism)
     void inquire(const Car& car) const {
         cout << name << " is inquiring about the following car:" << endl;
         car.displayInfo();
@@ -124,29 +134,39 @@ public:
         car.displayInfo();
     }
 
-    // Test drive
     void testDrive(const Car& car) const {
         cout << name << " is test driving the inquired car." << endl;
     }
 
-    // Purchase a car
-    void purchase(Car& car) {
+    static int getTotalCustomers() { return totalCustomers; }
+};
+
+int Customer::totalCustomers = 0;
+
+// Separate class for handling sales transactions
+class SalesManager {
+public:
+    void sellCar(Car& car, Customer& customer) {
         if (car.getIsAvailable()) {
             car.markAsSold();
-            cout << name << " bought the inquired car." << endl;
+            cout << customer.getName() << " bought the car " << car.getMake() << " " << car.getModel() << "." << endl;
         } else {
             cout << "Car is not available for purchase." << endl;
         }
     }
-
-    // Static method
-    static int getTotalCustomers() { return totalCustomers; }
 };
 
-// Initialize static variable
-int Customer::totalCustomers = 0;
+// Separate class for handling sales reports
+class CarSalesReport {
+public:
+    static void showSalesReport() {
+        cout << "Total Customers: " << Customer::getTotalCustomers() << endl;
+        cout << "Total Cars Sold: " << Car::getTotalCarsSold() << endl;
+        cout << "Total Revenue: " << Car::getTotalRevenue() << " Rs" << endl;
+    }
+};
 
-// Multilevel Inheritance
+// Multilevel Inheritance for different types of customers
 class RegularCustomer : public Customer {
 public:
     RegularCustomer(string name) : Customer(name) {
@@ -173,35 +193,20 @@ int main() {
     customerArray[0] = new VIPCustomer("Sahil Kharatmol");
     customerArray[1] = new RegularCustomer("Parth Shah");
 
-    // Accessor and mutator examples
-    cout << "Before modification:" << endl;
-    cout << "Customer Name: " << customerArray[0]->getName() << endl;
+    // SalesManager object to handle transactions
+    SalesManager salesManager;
 
-    customerArray[0]->setName("Aditya Borhade");
-
-    cout << "After modification:" << endl;
-    cout << "Customer Name: " << customerArray[0]->getName() << endl;
-
-    // Customer interactions demonstrating polymorphism
+    // Customer interactions
     customerArray[0]->inquire(*carArray[0]);
-    customerArray[0]->inquire(*carArray[1], "with a premium package request");
     customerArray[0]->testDrive(*carArray[0]);
-    customerArray[0]->purchase(*carArray[0]);
+    salesManager.sellCar(*carArray[0], *customerArray[0]);
 
     customerArray[1]->inquire(*carArray[2]);
     customerArray[1]->testDrive(*carArray[2]);
-    customerArray[1]->purchase(*carArray[2]);
+    salesManager.sellCar(*carArray[2], *customerArray[1]);
 
-    // Display all cars' status using runtime polymorphism
-    cout << "List of Cars:" << endl;
-    for (int i = 0; i < 3; i++) {
-        carArray[i]->displayInfo();
-    }
-
-    // Static method calls
-    cout << "Total Customers: " << Customer::getTotalCustomers() << endl;
-    cout << "Total Cars Sold: " << Car::getTotalCarsSold() << endl;
-    cout << "Total Revenue: " << Car::getTotalRevenue() << " Rs" << endl;
+    // Display sales report
+    CarSalesReport::showSalesReport();
 
     // Clean up
     for (int i = 0; i < 3; i++) {
