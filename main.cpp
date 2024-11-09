@@ -143,13 +143,39 @@ public:
 
 int Customer::totalCustomers = 0;
 
-// Separate class for handling sales transactions
-class SalesManager {
+// Strategy pattern for Discounts
+class DiscountStrategy {
 public:
+    virtual double applyDiscount(double price) const = 0;  // Pure virtual function
+};
+
+class SeasonalDiscount : public DiscountStrategy {
+public:
+    double applyDiscount(double price) const override {
+        return price * 0.90;  // 10% discount
+    }
+};
+
+class LoyaltyDiscount : public DiscountStrategy {
+public:
+    double applyDiscount(double price) const override {
+        return price * 0.85;  // 15% discount for loyal customers
+    }
+};
+
+// SalesManager class with Open/Closed Principle
+class SalesManager {
+private:
+    const DiscountStrategy& discountStrategy; // Composition for applying discount
+
+public:
+    SalesManager(const DiscountStrategy& strategy) : discountStrategy(strategy) {}
+
     void sellCar(Car& car, Customer& customer) {
         if (car.getIsAvailable()) {
+            car.setPrice(discountStrategy.applyDiscount(car.getPrice())); // Apply discount
             car.markAsSold();
-            cout << customer.getName() << " bought the car " << car.getMake() << " " << car.getModel() << "." << endl;
+            cout << customer.getName() << " bought the car " << car.getMake() << " " << car.getModel() << " at a discounted price." << endl;
         } else {
             cout << "Car is not available for purchase." << endl;
         }
@@ -193,8 +219,9 @@ int main() {
     customerArray[0] = new VIPCustomer("Sahil Kharatmol");
     customerArray[1] = new RegularCustomer("Parth Shah");
 
-    // SalesManager object to handle transactions
-    SalesManager salesManager;
+    // SalesManager object to handle transactions with Seasonal discount
+    SeasonalDiscount seasonalDiscount;
+    SalesManager salesManager(seasonalDiscount);
 
     // Customer interactions
     customerArray[0]->inquire(*carArray[0]);
